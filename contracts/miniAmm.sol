@@ -1,14 +1,15 @@
 //SPDX-License-Identifier: MIT
 pragma solidity ^0.8.5;
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
-
+/**@notice NOTE: this is me playing with Automated Market Maker logic. It works but will be flawed
+                 in certain conditions*/
 contract playAMM{
     constructor(address tokenAddr){
         owner=msg.sender;
         token= tokenAddr;
     }
     uint256 netEth;
-    uint256 netGtoken; 
+    uint256 netToken; 
     uint256 k;
 
     address owner;
@@ -22,8 +23,8 @@ contract playAMM{
     function deposit(uint256 amount, uint256 eth) external payable 
     {
         uint256 newEth= netEth + eth;
-        uint256 newGtoken= netGtoken + amount;
-        uint256 newk= newEth*newGtoken;
+        uint256 newToken= netToken + amount;
+        uint256 newk= newEth*newToken;
         IERC20(token).transferFrom(msg.sender, address(this), amount);
         if(newk >= k)
         {
@@ -34,21 +35,48 @@ contract playAMM{
 
         
     }
+    /**
+    @notice ((x-dx)*(y+dy)) = k , ((x-(dx*fee))*(y+dy)) = newk > k
+    dx= (x - (newk/(y+dy)))/fee
+    @dev fee= 4%*/
+    function ethForToken(uint256 amount) external payable
+    {
+        (msg.value==amount)? fortoken(amount): denied() ;
+       
+    }
 
-    function swap(uint256 amount) external
+    function tokenForEth(uint256 amount) external
     {
 
+    }
+
+    /**
+    @notice ((x-dx)*(y+dy)) = k , ((x-(dx*fee))*(y+dy)) = newk > k
+    dx= (x - (k/(y+dy)))/fee
+    @dev fee= 4%*/
+    function fortoken(uint256 amount)internal
+    {
+        uint256 oldeth= netEth;
+        uint256 oldToken= netToken;
+        uint256 oldk= k;
+        uint256 newk= (oldeth+)
+        uint256 maxTotal= (netToken-());
+    }
+
+    function denied()internal
+    {
+        revert failed("condition does not tally");
     }
 
     function withk(uint256 amount, uint256 eth, uint256 newk) internal
     {
         netEth+=eth;
-        netGtoken+=amount;
+        netToken+=amount;
         k=newk;
     }
     function withoutk(uint256 amount, uint256 eth) internal
     {
         netEth+=eth;
-        netGtoken+=amount;
+        netToken+=amount;
     }
 }
