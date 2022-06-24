@@ -37,7 +37,7 @@ contract playAMM{
     }
     /**
     @notice ((x-dx)*(y+dy)) = k , ((x-(dx*fee))*(y+dy)) = newk > k
-    dx= (x - (newk/(y+dy)))/fee
+    dx= (x - (k/(y+dy)))/fee
     @dev fee= 4%*/
     function ethForToken(uint256 amount) external payable
     {
