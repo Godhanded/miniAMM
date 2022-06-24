@@ -47,7 +47,8 @@ contract playAMM{
 
     function tokenForEth(uint256 amount) external
     {
-
+        (IERC20(token).balanceOf(msg.sender)== amount)? forEth(amount) : denied();
+        
     }
 
     /**
@@ -69,6 +70,19 @@ contract playAMM{
     function denied()internal pure
     {
         revert failed("condition does not tally");
+    }
+
+    function forEth(uint256 amount)internal
+    {
+        IERC20(token).transferFrom(msg.sender, address(this), amount);
+        uint256 oldEth= netEth;
+        uint256 oldToken= netToken;
+        uint256 oldk= k;
+        uint256 max = (oldEth-(oldk/(oldToken+amount)));
+        uint256 pay= (max*4)/100;
+        netEth-= pay;
+        netToken+= amount;
+        payable(msg.sender).transfer(pay);
     }
 
     function withk(uint256 amount, uint256 eth, uint256 newk) internal
