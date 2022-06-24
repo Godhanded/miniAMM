@@ -56,14 +56,17 @@ contract playAMM{
     @dev fee= 4%*/
     function fortoken(uint256 amount)internal
     {
-        uint256 oldeth= netEth;
+        uint256 oldEth= netEth;
         uint256 oldToken= netToken;
         uint256 oldk= k;
-        uint256 newk= (oldeth+)
-        uint256 maxTotal= (netToken-());
+        uint256 maxTotal= (oldToken-(oldk/(oldEth + amount)));
+        uint256 pay= (maxTotal*4)/100;
+        netEth+=amount;
+        netToken-=pay;
+        IERC20(token).transfer(msg.sender, pay);
     }
 
-    function denied()internal
+    function denied()internal pure
     {
         revert failed("condition does not tally");
     }
